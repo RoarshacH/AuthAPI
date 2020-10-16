@@ -56,7 +56,7 @@ exports.newUser = (req, res , next) =>{
                     username: req.body.name,
                     email:req.body.email,
                     password:password,
-                    id:uID
+                    uID:uID
                     }
                 })}
             )

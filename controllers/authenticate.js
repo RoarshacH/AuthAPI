@@ -6,8 +6,7 @@ exports.authenticate = (req, res , next) =>{
     const id = req.params.userID;
     firebase.database().ref('/users/' + id).once('value').then(function(snapshot) {
         if(snapshot.val()){
-            var userID = snapshot.val().uID;
-            ref = firebase.database().ref("notifications").child(userID);  
+            ref = firebase.database().ref("notifications").child(id);  
             ref.push().set({
               message: "Authentication Request",
               type:"request"
