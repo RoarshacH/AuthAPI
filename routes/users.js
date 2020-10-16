@@ -1,15 +1,14 @@
 const express = require("express");
-const mongoose = require("mongoose");
-
 const router = express.Router();
-
 const checkAuth = require("../middleware/check_auth");
-
 const UserController = require("../controllers/user");
 
-router.get("/:userID", checkAuth, UserController.getUser);
+
+
 
 router.post("/newuser", UserController.newUser);
+
+router.get("/:userID", checkAuth, UserController.getUser);
 
 router.patch("/:userID", checkAuth,UserController.updateUser);
 

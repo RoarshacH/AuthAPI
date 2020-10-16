@@ -1,6 +1,4 @@
-const mongoose = require("mongoose");
 const firebase = require("firebase");
-const Website = require("../models/website");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 

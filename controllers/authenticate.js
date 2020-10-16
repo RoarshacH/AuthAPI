@@ -1,6 +1,4 @@
 const firebase = require('firebase');
-// const request = require('request');
-// const User = require("../models/users");
 const Notification = require("../controllers/sendNotification");
 
 //Auth Control
