@@ -11,13 +11,14 @@ exports.authenticate = (req, res , next) =>{
             ref.push().set({
               message: "Authentication Request",
               type:"request"
-            }).then(()=>{
+            })
+            .then(()=>{
                 res.status(200).json({
                     message: "Notification Sent",
                     error: err
                 });
-            }).catch( err =>
-                {
+            })
+            .catch( err =>{
                     res.status(404).json({
                         message: "Auth Failed",
                         error: err

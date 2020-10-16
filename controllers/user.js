@@ -32,27 +32,43 @@ exports.newUser = (req, res , next) =>{
     });
     firebase.auth().createUserWithEmailAndPassword(req.body.email, password)
     .then(function success(userData){
-        const uID = userData.user.uid;
-        firebase.database().ref('users/' + uID).set({
-            username: req.body.name,
-            email: req.body.email,
-            password: password,
-            uID:uID,
-            device_token:""
+        bcrypt.hash(req.body.password, 10, (err, hash)=>{
+            if (err){
+                res.status(500).json({
+                    message: "Error",
+                    err: err
+                });
+            }
 
-        }).then(()=>
-           { res.status(200).json({
+            else{
+                const uID = userData.user.uid;
+                firebase.database().ref('users/' + uID).set({
+                username: req.body.name,
+                email: req.body.email,
+                password: hash,
+                uID:uID,
+                device_token:""
+
+            }).then(()=>{
+                res.status(200).json({
                 message: "New user is successfully created",
                 data:{
                     username: req.body.name,
                     email:req.body.email,
                     password:password,
                     id:uID
-                }
-            })
+                    }
+                })}
+            )
+            .catch(function failure(error) {
+                res.status(400).json({
+                    message: "Error",
+                    error: error.message
+                });
+            });
             }
-        )})
-        .catch(function failure(error) {
+    });
+    }).catch(err=>{
         res.status(400).json({
             message: "Error",
             error: error.message
