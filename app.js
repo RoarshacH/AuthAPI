@@ -1,9 +1,9 @@
 const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
-const userRoutes = require("./api/routes/users");
-const authRoutes = require("./api/routes/authenticate");
-const websiteRoutes = require("./api/routes/website");
+const userRoutes = require("./routes/users");
+const authRoutes = require("./routes/authenticate");
+const websiteRoutes = require("./routes/website");
 const firebase = require("firebase");
 const app = express();
 
