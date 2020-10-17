@@ -5,26 +5,42 @@ const Notification = require("../controllers/sendNotification");
 exports.authenticate = (req, res , next) =>{
     const id = req.params.userID;
     firebase.database().ref('/users/' + id).once('value').then(function(snapshot) {
+
         if(snapshot.val()){
+
             ref = firebase.database().ref("notifications").child(id);  
             ref.push().set({
               message: "Authentication Request",
               type:"request"
+              
             })
-            .then(()=>{
-                res.status(200).json({
-                    message: "Notification Sent",
-                    error: err
-                });
+            .then((result)=>{
+                var requests = ref.child('/authRequests').child(id);
+                requests.on('child_added', function(requestSnapshot) {
+                    var request = requestSnapshot.val();
+                    if(request.message){
+                        //   requestSnapshot.ref.remove();
+                        res.status(200).json({
+                            message: "Authentication Success",
+                            result: request.message
+                        });
+                    }
+                    else{
+                        res.status(400).json({
+                            message: "Authentication Request Failed",
+                            error: err
+                        });
+                    }
+                })
+                .catch(err =>{
+                        res.status(404).json({
+                            message: "The Authentication Device is offline",
+                        });
+                    }
+                );
             })
-            .catch( err =>{
-                    res.status(404).json({
-                        message: "Auth Failed",
-                        error: err
-                    });
-                }
-            );
         }
+
         else{
             res.status(400).json({
                 message: "User Does Not Exist "

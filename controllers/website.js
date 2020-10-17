@@ -3,11 +3,11 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 exports.signup = (req, res , next) =>{
-    const email = req.body.email;
-    firebase.database().ref('/admins/' + email).once('value').then(function(snapshot) {
+    const user = req.body.userName;
+    firebase.database().ref('/admins/' + user).once('value').then(function(snapshot) {
         if(snapshot.val()){
             res.status(422).json({
-                message:"User with the Email already exists"
+                message:"User with the Username already exists"
             });
         }
         else{
@@ -19,8 +19,9 @@ exports.signup = (req, res , next) =>{
                     });
                 }
                 else{
-                    firebase.database().ref('admins/' + email).set({
-                        email: email,
+                    firebase.database().ref('/admins/' + user).set({
+                        user: user,
+                        email: req.body.email,
                         password: hash
                     })
                     .then((doc) =>{
@@ -45,8 +46,8 @@ exports.signup = (req, res , next) =>{
 }
 
 exports.login = (req, res , next) =>{
-    const email = req.body.email;
-    firebase.database().ref('/admins/' + email).once('value').then(function(snapshot) {
+    const user = req.body.userName;
+    firebase.database().ref('/admins/' + user).once('value').then(function(snapshot) {
         if(snapshot.val()){
             bcrypt.compare( req.body.password, snapshot.val().password, (err, result)=>{
                 if(err){
