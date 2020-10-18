@@ -1,5 +1,6 @@
 const firebase = require("firebase");
 const generator = require('generate-password');
+const bcrypt = require("bcrypt");
 
 exports.getUser = (req, res , next) =>{
     const id = req.params.userID;
@@ -26,11 +27,11 @@ exports.getUser = (req, res , next) =>{
 }
 
 exports.newUser = (req, res , next) =>{
-    var password = generator.generate({
-        length: 10,
-        numbers: true
-    });
-    firebase.auth().createUserWithEmailAndPassword(req.body.email, password)
+    // var password = generator.generate({
+    //     length: 10,
+    //     numbers: true
+    // });
+    firebase.auth().createUserWithEmailAndPassword(req.body.email, req.body.password)
     .then(function success(userData){
         bcrypt.hash(req.body.password, 10, (err, hash)=>{
             if (err){
@@ -42,36 +43,34 @@ exports.newUser = (req, res , next) =>{
 
             else{
                 const uID = userData.user.uid;
-                firebase.database().ref('users/' + uID).set({
-                username: req.body.name,
-                email: req.body.email,
-                password: hash,
-                uID:uID,
-                device_token:""
-
-            }).then(()=>{
-                res.status(200).json({
-                message: "New user is successfully created",
-                data:{
-                    username: req.body.name,
-                    email:req.body.email,
-                    password:password,
-                    uID:uID
-                    }
-                })}
-            )
-            .catch(function failure(error) {
-                res.status(400).json({
-                    message: "Error",
-                    error: error.message
+                firebase.database().ref('/users/' + uID).set({
+                    email: req.body.email,
+                    password: hash,
+                    uID:uID,
+                    device_token:" "
+                }).then(()=>{
+                    res.status(200).json({
+                    message: "New user is successfully created",
+                    data:
+                        {
+                            email:req.body.email,
+                            password:req.body.password,
+                            uID:uID
+                        }
+                    })}
+                )
+                .catch(function failure(error) {
+                    res.status(400).json({
+                        message: "Error",
+                        err: error.message
+                    });
                 });
-            });
             }
     });
     }).catch(err=>{
         res.status(400).json({
             message: "Error",
-            error: error.message
+            err: err
         });
     });
 }
