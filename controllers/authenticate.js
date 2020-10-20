@@ -2,15 +2,19 @@ const firebase = require("firebase");
 
 exports.authenticate = (req, res , next) =>{
     const id = req.params.userID;
+    //remove any requests remaining
+    firebase.database().ref('/authRequests').child(id).remove(); 
+    firebase.database().ref('/notifications').child(id).remove();
+     
     firebase.database().ref('/users/' + id).once('value').then(function(snapshot) {
         if(snapshot.val()){
           ref = firebase.database().ref("notifications").child(id);  
           ref.push().set({
-            message: "ds",
+            message: "New Auth Request",
             type:"request" 
           }, function(error){
             if (error) {
-              res.status(404).json({
+              res.status(400).json({
                 message: "Request Error Try the OTP Password",
             });
             } else {
@@ -33,13 +37,13 @@ exports.authenticate = (req, res , next) =>{
               );
         }
         else{
-          res.status(400).json({
+          res.status(404).json({
               message: "User Does Not Exist "
           }); 
         }        
       })
       .catch(err=>{
-        res.status(404).json({
+        res.status(500).json({
             message: "Auth Failed",
             error: err
             });      

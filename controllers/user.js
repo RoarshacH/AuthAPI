@@ -20,17 +20,13 @@ exports.getUser = (req, res , next) =>{
         }
     })
     .catch(err => {
-        res.status(400).json({
+        res.status(500).json({
             message: err
         })
     });
 }
 
 exports.newUser = (req, res , next) =>{
-    // var password = generator.generate({
-    //     length: 10,
-    //     numbers: true
-    // });
     firebase.auth().createUserWithEmailAndPassword(req.body.email, req.body.password)
     .then(function success(userData){
         bcrypt.hash(req.body.password, 10, (err, hash)=>{
@@ -40,7 +36,6 @@ exports.newUser = (req, res , next) =>{
                     err: err
                 });
             }
-
             else{
                 const uID = userData.user.uid;
                 firebase.database().ref('/users/' + uID).set({
@@ -68,7 +63,7 @@ exports.newUser = (req, res , next) =>{
             }
     });
     }).catch(err=>{
-        res.status(400).json({
+        res.status(500).json({
             message: "Error",
             err: err
         });
@@ -100,7 +95,7 @@ exports.deleteUser = (req, res , next) =>{
         })
     })
     .catch(err=>{
-        res.status(400).json({
+        res.status(500).json({
             message: err,
         })
     });
