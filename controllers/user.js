@@ -1,5 +1,4 @@
 const firebase = require("firebase");
-const generator = require('generate-password');
 const bcrypt = require("bcrypt");
 
 exports.getUser = (req, res , next) =>{
@@ -7,7 +6,6 @@ exports.getUser = (req, res , next) =>{
     firebase.database().ref('/users/' + id).once('value').then(function(snapshot) {
         if(snapshot.val()){
             res.status(200).json({
-                username: snapshot.val().username,
                 email: snapshot.val().email,
                 password: snapshot.val().password,
                 uID: snapshot.val().uID
@@ -50,7 +48,8 @@ exports.newUser = (req, res , next) =>{
                         {
                             email:req.body.email,
                             password:req.body.password,
-                            uID:uID
+                            uID:uID,
+                            app:"https://drive.google.com/file/d/16yywNNgWN1duAJ-ChGZv9er1g77p8W-R/view?usp=sharing";
                         }
                     })}
                 )
