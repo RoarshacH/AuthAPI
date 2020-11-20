@@ -49,7 +49,7 @@ exports.newUser = (req, res , next) =>{
                             email:req.body.email,
                             password:req.body.password,
                             uID:uID,
-                            app:"https://drive.google.com/file/d/16yywNNgWN1duAJ-ChGZv9er1g77p8W-R/view?usp=sharing";
+                            app:"https://drive.google.com/file/d/16yywNNgWN1duAJ-ChGZv9er1g77p8W-R/view?usp=sharing"
                         }
                     })}
                 )
